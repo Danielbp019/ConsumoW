@@ -26,7 +26,6 @@
 - `sharp` es dependencia directa requerida por `astro:assets` con pnpm: no eliminarla.
 - `pnpm-workspace.yaml` habilita los scripts de build de esbuild/sharp: no eliminarlo.
 - No edites archivos generados: `dist/`, `.astro/`, `pnpm-lock.yaml`.
-- Despliegue en Cloudflare Pages (https://timbertec.pages.dev): build = `pnpm build`, salida `dist`.
 
 # tecnologias usadas
 
@@ -38,4 +37,3 @@
 - pnpm
 - Prettier + prettier-plugin-astro
 - sharp
-
