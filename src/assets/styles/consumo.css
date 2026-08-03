@@ -74,7 +74,7 @@ lite-youtube {
   font-weight: bold;
 }
 
-.hero p {
+.hero .lead {
   font-size: 1.5rem;
   margin: 1rem 0 2rem;
 }
@@ -104,16 +104,11 @@ lite-youtube {
 }
 
 #hero-tabs-content {
-  display: grid;
+  height: 21rem;
 }
 
 #hero-tabs-content .tab-pane {
-  display: block;
-  grid-area: 1 / 1;
-}
-
-#hero-tabs-content .tab-pane:not(.active) {
-  visibility: hidden;
+  height: 100%;
 }
 
 /* Navbar Active Neon Effect */

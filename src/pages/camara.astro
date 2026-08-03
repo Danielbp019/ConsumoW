@@ -11,7 +11,7 @@ import "../assets/styles/camara.css";
     <section id="hero" class="hero">
       <div class="container pb-5">
         <header class="text-center mb-4">
-          <h2 class="display-4 font-orbitron">Diagnóstico de Cámara</h2>
+          <h1 class="display-4 font-orbitron">Diagnóstico de Cámara</h1>
           <p class="lead">Conoce el estado y las capacidades reales de tu cámara web.</p>
         </header>
 
@@ -29,12 +29,12 @@ import "../assets/styles/camara.css";
           <article class="col-lg-5 mb-3 py-3">
             <div class="card text-bg-dark border-light text-start">
               <div class="card-header">
-                <h5 class="card-title mb-0">Control</h5>
+                <h2 class="h5 card-title mb-0">Control</h2>
               </div>
               <div class="card-body">
                 <label for="selectCamara" class="form-label">Cámara</label>
                 <select id="selectCamara" class="form-select mb-3" disabled></select>
-                <video id="videoPreview" autoplay playsinline muted></video>
+                <video id="videoPreview" autoplay playsinline muted aria-label="Vista previa de la cámara"></video>
                 <div class="d-flex flex-wrap gap-2 mt-3">
                   <button id="btnIniciar" type="button" class="btn btn-primary" disabled> Iniciar cámara </button>
                   <button id="btnDiagnosticar" type="button" class="btn btn-warning" disabled>
@@ -42,21 +42,7 @@ import "../assets/styles/camara.css";
                   </button>
                   <button id="btnPdf" type="button" class="btn btn-success" disabled> Descargar reporte PDF </button>
                 </div>
-                <p id="res-descripcion-camaras" class="text-body-secondary small mt-3 mb-0"></p>
-              </div>
-            </div>
-
-            <!-- Puntaje general -->
-            <div class="card text-bg-dark border-light text-start mt-3">
-              <div class="card-header">
-                <h6 class="card-title mb-0">Puntaje general</h6>
-              </div>
-              <div class="card-body">
-                <div class="d-flex align-items-center gap-3 mb-2">
-                  <span id="res-puntaje" class="display-6">—</span>
-                  <span id="res-clasificacion" class="badge text-bg-secondary fs-6">Pendiente</span>
-                </div>
-                <p id="res-resumen" class="mb-0">—</p>
+                <p id="res-descripcion-camaras" class="text-body-secondary small mt-3 mb-0" aria-live="polite"></p>
               </div>
             </div>
           </article>
@@ -64,11 +50,11 @@ import "../assets/styles/camara.css";
           <!-- Columna derecha: resultados -->
           <article class="col-lg-7 mb-3 py-3">
             <div class="row g-3">
-              <!-- Estado -->
+              <!-- Cámara y estado -->
               <div class="col-md-6">
                 <div class="card text-bg-dark border-light text-start h-100">
                   <div class="card-header">
-                    <h6 class="card-title mb-0">Estado de la cámara</h6>
+                    <h2 class="h6 card-title mb-0">Cámara y estado</h2>
                   </div>
                   <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
@@ -79,21 +65,11 @@ import "../assets/styles/camara.css";
                       <span class="resultado-etiqueta">Permisos</span>
                       <span id="estado-permisos" class="badge text-bg-secondary">Pendiente</span>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
                       <span class="resultado-etiqueta">Streaming</span>
                       <span id="estado-stream" class="badge text-bg-secondary">Inactivo</span>
                     </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Información técnica -->
-              <div class="col-md-6">
-                <div class="card text-bg-dark border-light text-start h-100">
-                  <div class="card-header">
-                    <h6 class="card-title mb-0">Información técnica</h6>
-                  </div>
-                  <div class="card-body">
+                    <hr class="my-2" />
                     <div class="resultado-fila">
                       <span class="resultado-etiqueta">Resolución actual</span>
                       <span id="res-info-resolucion">—</span>
@@ -114,21 +90,11 @@ import "../assets/styles/camara.css";
                       <span class="resultado-etiqueta">Zoom</span>
                       <span id="res-info-zoom">—</span>
                     </div>
-                    <div class="resultado-fila mb-0">
+                    <div class="resultado-fila mb-1">
                       <span class="resultado-etiqueta">Torch</span>
                       <span id="res-info-torch">—</span>
                     </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Resolución máxima real -->
-              <div class="col-md-6">
-                <div class="card text-bg-dark border-light text-start h-100">
-                  <div class="card-header">
-                    <h6 class="card-title mb-0">Resolución máxima real</h6>
-                  </div>
-                  <div class="card-body">
+                    <hr class="my-2" />
                     <div class="resultado-fila">
                       <span class="resultado-etiqueta">Máxima alcanzada</span>
                       <span id="res-max" class="fw-bold">—</span>
@@ -140,11 +106,11 @@ import "../assets/styles/camara.css";
                 </div>
               </div>
 
-              <!-- FPS -->
+              <!-- FPS y resolución -->
               <div class="col-md-6">
                 <div class="card text-bg-dark border-light text-start h-100">
                   <div class="card-header">
-                    <h6 class="card-title mb-0">FPS</h6>
+                    <h2 class="h6 card-title mb-0">FPS y resolución</h2>
                   </div>
                   <div class="card-body">
                     <div class="resultado-fila">
@@ -152,56 +118,36 @@ import "../assets/styles/camara.css";
                       <span id="res-fps-solicitados">—</span>
                     </div>
                     <div class="resultado-fila">
+                      <span class="resultado-etiqueta">Negociado</span>
+                      <span id="res-fps-negociado">—</span>
+                    </div>
+                    <div class="resultado-fila">
+                      <span class="resultado-etiqueta">Rango soportado</span>
+                      <span id="res-fps-rango">—</span>
+                    </div>
+                    <div class="resultado-fila">
                       <span class="resultado-etiqueta">Obtenidos</span>
                       <span id="res-fps-obtenidos">—</span>
                     </div>
-                    <div class="resultado-fila mb-0">
-                      <span class="resultado-etiqueta">Caídas</span>
-                      <span id="res-fps-caidas">—</span>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                      <span class="resultado-etiqueta">Fidelidad</span>
+                      <span id="res-fps-fidelidad" class="badge text-bg-secondary">Pendiente</span>
                     </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Calidad de imagen -->
-              <div class="col-md-6">
-                <div class="card text-bg-dark border-light text-start h-100">
-                  <div class="card-header">
-                    <h6 class="card-title mb-0">Calidad de imagen</h6>
-                  </div>
-                  <div class="card-body">
-                    <div class="resultado-fila">
-                      <span class="resultado-etiqueta">Brillo</span>
-                      <span id="res-brillo">—</span>
-                    </div>
-                    <div class="resultado-fila">
-                      <span class="resultado-etiqueta">Contraste</span>
-                      <span id="res-contraste">—</span>
-                    </div>
-                    <div class="resultado-fila">
-                      <span class="resultado-etiqueta">Nitidez</span>
-                      <span id="res-nitidez">—</span>
-                    </div>
-                    <div class="resultado-fila mb-0">
-                      <span class="resultado-etiqueta">Exposición</span>
-                      <span id="res-exposicion">—</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Iluminación -->
-              <div class="col-md-6">
-                <div class="card text-bg-dark border-light text-start h-100">
-                  <div class="card-header">
-                    <h6 class="card-title mb-0">Iluminación</h6>
-                  </div>
-                  <div class="card-body">
-                    <div class="resultado-fila">
-                      <span class="resultado-etiqueta">Nivel</span>
-                      <span id="res-iluminacion" class="badge text-bg-secondary">Pendiente</span>
-                    </div>
-                    <p id="res-iluminacion-reco" class="text-body-secondary small mb-0 mt-2">—</p>
+                    <p id="res-fps-fidelidad-texto" class="text-body-secondary small mb-0 mt-2">—</p>
+                    <hr class="my-2" />
+                    <table class="table table-sm table-dark align-middle mb-0">
+                      <thead>
+                        <tr>
+                          <th class="fw-semibold">Resolución</th>
+                          <th class="fw-semibold text-end">FPS</th>
+                        </tr>
+                      </thead>
+                      <tbody id="res-fps-tabla">
+                        <tr>
+                          <td colspan="2" class="text-body-secondary text-center">—</td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
@@ -210,7 +156,7 @@ import "../assets/styles/camara.css";
               <div class="col-md-6">
                 <div class="card text-bg-dark border-light text-start h-100">
                   <div class="card-header">
-                    <h6 class="card-title mb-0">Estabilidad de transmisión</h6>
+                    <h2 class="h6 card-title mb-0">Estabilidad de transmisión</h2>
                   </div>
                   <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
@@ -237,20 +183,63 @@ import "../assets/styles/camara.css";
                 </div>
               </div>
 
-              <!-- Estándar mundial -->
+              <!-- Imagen y luz -->
               <div class="col-md-6">
                 <div class="card text-bg-dark border-light text-start h-100">
                   <div class="card-header">
-                    <h6 class="card-title mb-0">Estándar mundial</h6>
+                    <h2 class="h6 card-title mb-0">Imagen y luz</h2>
                   </div>
                   <div class="card-body">
+                    <div class="resultado-fila">
+                      <span class="resultado-etiqueta">Brillo</span>
+                      <span id="res-brillo">—</span>
+                    </div>
+                    <div class="resultado-fila">
+                      <span class="resultado-etiqueta">Contraste</span>
+                      <span id="res-contraste">—</span>
+                    </div>
+                    <div class="resultado-fila">
+                      <span class="resultado-etiqueta">Nitidez</span>
+                      <span id="res-nitidez">—</span>
+                    </div>
+                    <div class="resultado-fila mb-1">
+                      <span class="resultado-etiqueta">Exposición</span>
+                      <span id="res-exposicion">—</span>
+                    </div>
+                    <hr class="my-2" />
+                    <div class="resultado-fila">
+                      <span class="resultado-etiqueta">Nivel</span>
+                      <span id="res-iluminacion" class="badge text-bg-secondary">Pendiente</span>
+                    </div>
+                    <p id="res-iluminacion-reco" class="text-body-secondary small mb-0 mt-2">—</p>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                      <span class="resultado-etiqueta">Reducción por luz</span>
+                      <span id="res-reduccion-luz" class="badge text-bg-secondary">Pendiente</span>
+                    </div>
+                    <p id="res-reduccion-luz-texto" class="text-body-secondary small mb-0 mt-2">—</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Resultado -->
+              <div class="col-md-12">
+                <div class="card text-bg-dark border-light text-start h-100">
+                  <div class="card-header">
+                    <h2 class="h6 card-title mb-0">Resultado</h2>
+                  </div>
+                  <div class="card-body">
+                    <div class="d-flex align-items-center gap-3 mb-2">
+                      <span id="res-puntaje" class="display-6">—</span>
+                      <span id="res-clasificacion" class="badge text-bg-secondary fs-6">Pendiente</span>
+                    </div>
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                      <span class="resultado-etiqueta">Resultado</span>
+                      <span class="resultado-etiqueta">Estándar mundial</span>
                       <span id="res-estandar-mundial" class="badge text-bg-secondary">Pendiente</span>
                     </div>
-                    <p class="text-body-secondary small mb-0 mt-2">
+                    <p class="text-body-secondary small mb-2">
                       Estándar mundial: 1080p, 30 FPS y autofocus. Mínimo: 720p y 20 FPS.
                     </p>
+                    <p id="res-resumen" class="text-body-secondary small mb-0" aria-live="polite">—</p>
                   </div>
                 </div>
               </div>
@@ -269,13 +258,15 @@ import "../assets/styles/camara.css";
     iniciarStream,
     detenerStream,
     obtenerInfoTecnica,
-    probarResolucionMaxima,
-    medirFPS,
+    probarResolucionesConFPS,
     analizarCalidadImagen,
     evaluarIluminacion,
     medirEstabilidad,
     clasificarEstabilidad,
     calcularEstandarMundial,
+    evaluarFidelidadFPS,
+    recomendacionCamara,
+    detectarReduccionPorLuz,
     calcularPuntaje,
     generarResumen,
     generarPDF,
@@ -309,6 +300,12 @@ import "../assets/styles/camara.css";
     if (!el) return;
     el.textContent = texto;
     el.className = `badge text-bg-${tipo}`;
+  }
+
+  function etiquetaFidelidad(estado: "limitada" | "fiel" | "sin datos"): string {
+    if (estado === "limitada") return "Limitada";
+    if (estado === "fiel") return "Fiel";
+    return "Sin datos";
   }
 
   async function cargarCamaras(select: HTMLSelectElement, seleccionado?: string) {
@@ -417,14 +414,50 @@ import "../assets/styles/camara.css";
         setTexto("res-info-zoom", info.zoom ? "Disponible" : "No disponible");
         setTexto("res-info-torch", info.torch ? "Disponible" : "No disponible");
 
-        const resolucionMaxima = await probarResolucionMaxima(streamActual, el.videoPreview);
+        const fpsSolicitados = info.fpsRangoMax ?? 30;
+        const { resolucionMaxima, resultados } = await probarResolucionesConFPS(
+          streamActual,
+          el.videoPreview,
+          fpsSolicitados,
+        );
         setTexto("res-max", resolucionMaxima);
 
-        const fpsSolicitados = 30;
-        const fps = await medirFPS(el.videoPreview, 5000);
-        setTexto("res-fps-solicitados", String(fpsSolicitados));
-        setTexto("res-fps-obtenidos", `${fps.fps} fps`);
-        setTexto("res-fps-caidas", String(fps.caidas));
+        const ultimoResultado = resultados[resultados.length - 1];
+        const fpsObtenidos = ultimoResultado?.fps ?? 0;
+        setTexto("res-fps-solicitados", `${fpsSolicitados} fps`);
+        setTexto("res-fps-negociado", info.fpsNegociado !== null ? `${info.fpsNegociado} fps` : "No disponible");
+        setTexto(
+          "res-fps-rango",
+          info.fpsRangoMin !== null && info.fpsRangoMax !== null
+            ? `${info.fpsRangoMin}–${info.fpsRangoMax} fps`
+            : "No disponible",
+        );
+        setTexto("res-fps-obtenidos", `${fpsObtenidos} fps`);
+
+        const tabla = document.getElementById("res-fps-tabla");
+        if (tabla) {
+          tabla.innerHTML = "";
+          if (resultados.length === 0) {
+            tabla.innerHTML = '<tr><td colspan="2" class="text-center">Sin datos</td></tr>';
+          } else {
+            for (const item of resultados) {
+              const fila = document.createElement("tr");
+              const celdaRes = document.createElement("td");
+              celdaRes.textContent = item.resolucion;
+              const celdaFps = document.createElement("td");
+              celdaFps.textContent = `${item.fps} fps`;
+              celdaFps.className = "text-end";
+              fila.append(celdaRes, celdaFps);
+              tabla.appendChild(fila);
+            }
+          }
+        }
+
+        const fidelidad = evaluarFidelidadFPS(info.fpsRangoMax, resultados);
+        const claseFidelidad =
+          fidelidad.estado === "fiel" ? "success" : fidelidad.estado === "limitada" ? "danger" : "secondary";
+        setBadge("res-fps-fidelidad", etiquetaFidelidad(fidelidad.estado), claseFidelidad);
+        setTexto("res-fps-fidelidad-texto", fidelidad.texto);
 
         const calidad = analizarCalidadImagen(el.videoPreview);
         setTexto("res-brillo", `${calidad.brillo}% (${calidad.brilloEtiqueta})`);
@@ -437,6 +470,14 @@ import "../assets/styles/camara.css";
           iluminacion.nivel === "excelente" ? "success" : iluminacion.nivel === "aceptable" ? "warning" : "danger";
         setBadge("res-iluminacion", etiquetaIluminacion(iluminacion.nivel), claseIluminacion);
         setTexto("res-iluminacion-reco", iluminacion.recomendacion);
+
+        const reduccionPorLuz = detectarReduccionPorLuz(calidad.brillo, fpsObtenidos, info.fpsRangoMax);
+        setBadge(
+          "res-reduccion-luz",
+          reduccionPorLuz.activo ? "Sospechosa" : "No detectada",
+          reduccionPorLuz.activo ? "warning" : "success",
+        );
+        setTexto("res-reduccion-luz-texto", reduccionPorLuz.texto);
 
         const estab = await medirEstabilidad(el.videoPreview, 10000);
         const estadoEstabilidad = clasificarEstabilidad(estab.fps, estab.congelamientos);
@@ -454,16 +495,18 @@ import "../assets/styles/camara.css";
         setTexto("res-estabilidad-congelamientos", String(estab.congelamientos));
         setTexto("res-estabilidad-resp", `${estab.tiempoRespuesta} ms`);
 
-        const estandarMundial = calcularEstandarMundial(resolucionMaxima, fps.fps, info.autofocus);
+        const estandarMundial = calcularEstandarMundial(resultados, info.autofocus);
         setBadge(
           "res-estandar-mundial",
           etiquetaEstandarMundial(estandarMundial),
           etiquetaEstandarMundialClase(estandarMundial),
         );
 
+        const recomendacion = recomendacionCamara(estandarMundial, resultados);
+
         const puntaje = calcularPuntaje({
           resolucionMaxima,
-          fpsObtenidos: fps.fps,
+          fpsObtenidos,
           nitidez: calidad.nitidez,
           contraste: calidad.contraste,
           brillo: calidad.brillo,
@@ -480,7 +523,7 @@ import "../assets/styles/camara.css";
                 : "danger";
         setBadge("res-clasificacion", puntaje.clasificacion, claseClasificacion);
 
-        const resumen = generarResumen(estandarMundial, iluminacion);
+        const resumen = generarResumen(estandarMundial, iluminacion, recomendacion);
         setTexto("res-resumen", resumen);
 
         resultadoActual = {
@@ -492,9 +535,14 @@ import "../assets/styles/camara.css";
           autofocus: info.autofocus,
           zoom: info.zoom,
           torch: info.torch,
+          fpsRangoMin: info.fpsRangoMin,
+          fpsRangoMax: info.fpsRangoMax,
+          fpsNegociado: info.fpsNegociado,
           fpsSolicitados,
-          fpsObtenidos: fps.fps,
-          fpsCaidas: fps.caidas,
+          fpsObtenidos,
+          fpsPorResolucion: resultados,
+          fpsFidelidad: fidelidad,
+          reduccionPorLuz,
           brillo: calidad.brillo,
           brilloEtiqueta: calidad.brilloEtiqueta,
           contraste: calidad.contraste,

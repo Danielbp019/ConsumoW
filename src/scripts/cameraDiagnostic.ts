@@ -5,6 +5,21 @@ export interface CamaraDispositivo {
   nombre: string;
 }
 
+export interface ResultadoResolucionFPS {
+  resolucion: string;
+  fps: number;
+}
+
+export interface FidelidadFPS {
+  estado: "limitada" | "fiel" | "sin datos";
+  texto: string;
+}
+
+export interface ReduccionPorLuz {
+  activo: boolean;
+  texto: string;
+}
+
 export interface DiagnosticoResultado {
   nombreCamara: string;
   resolucionActual: string;
@@ -14,9 +29,14 @@ export interface DiagnosticoResultado {
   autofocus: boolean;
   zoom: boolean;
   torch: boolean;
+  fpsRangoMin: number | null;
+  fpsRangoMax: number | null;
+  fpsNegociado: number | null;
   fpsSolicitados: number;
   fpsObtenidos: number;
-  fpsCaidas: number;
+  fpsPorResolucion: ResultadoResolucionFPS[];
+  fpsFidelidad: FidelidadFPS;
+  reduccionPorLuz: ReduccionPorLuz;
   brillo: number;
   brilloEtiqueta: string;
   contraste: number;
@@ -80,7 +100,20 @@ export async function iniciarStream(camaraId?: string): Promise<MediaStream> {
   if (camaraId) {
     video.deviceId = { exact: camaraId };
   }
-  return navigator.mediaDevices.getUserMedia({ video, audio: false });
+  const stream = await navigator.mediaDevices.getUserMedia({ video, audio: false });
+  const track = stream.getVideoTracks()[0];
+  if (track) {
+    try {
+      const caps = track.getCapabilities() as CapabilitiesExtendidas;
+      const maxFps = caps.frameRate?.max;
+      if (maxFps) {
+        await track.applyConstraints({ frameRate: { ideal: maxFps } });
+      }
+    } catch {
+      // Si la cámara no permite ajustar el frameRate, se mantiene el ideal inicial.
+    }
+  }
+  return stream;
 }
 
 export function detenerStream(stream: MediaStream | null): void {
@@ -119,6 +152,9 @@ export function obtenerInfoTecnica(stream: MediaStream, video: HTMLVideoElement)
     autofocus: Array.isArray(caps.focusMode) && caps.focusMode.includes("continuous"),
     zoom: zoomCapable || caps.zoom === true,
     torch: caps.torch === true,
+    fpsRangoMin: caps.frameRate?.min ?? null,
+    fpsRangoMax: caps.frameRate?.max ?? null,
+    fpsNegociado: settings.frameRate ?? null,
   };
 }
 
@@ -140,26 +176,38 @@ function esperarResolucion(video: HTMLVideoElement, w: number, h: number, ms: nu
   });
 }
 
-export async function probarResolucionMaxima(stream: MediaStream, video: HTMLVideoElement): Promise<string> {
+export async function probarResolucionesConFPS(
+  stream: MediaStream,
+  video: HTMLVideoElement,
+  fpsIdeal: number,
+  msPorResolucion = 2500,
+): Promise<{ resolucionMaxima: string; resultados: ResultadoResolucionFPS[] }> {
   const track = stream.getVideoTracks()[0];
-  let mejor = "";
-  for (const [w, h] of RESOLUCIONES) {
-    try {
-      await track.applyConstraints({ width: { exact: w }, height: { exact: h } });
-      const logrado = await esperarResolucion(video, w, h, 1500);
-      if (logrado) {
-        mejor = `${video.videoWidth}x${video.videoHeight}`;
-      } else {
+  const resultados: ResultadoResolucionFPS[] = [];
+  if (track) {
+    for (const [w, h] of RESOLUCIONES) {
+      try {
+        await track.applyConstraints({
+          width: { exact: w },
+          height: { exact: h },
+          frameRate: { ideal: fpsIdeal },
+        });
+        const logrado = await esperarResolucion(video, w, h, 1500);
+        if (!logrado) {
+          break;
+        }
+        const { fps } = await medirFPS(video, msPorResolucion);
+        resultados.push({ resolucion: `${video.videoWidth}x${video.videoHeight}`, fps });
+      } catch {
         break;
       }
-    } catch {
-      break;
     }
   }
-  if (!mejor) {
-    mejor = `${video.videoWidth || "?"}x${video.videoHeight || "?"}`;
+  let resolucionMaxima = resultados[resultados.length - 1]?.resolucion ?? "";
+  if (!resolucionMaxima) {
+    resolucionMaxima = `${video.videoWidth || "?"}x${video.videoHeight || "?"}`;
   }
-  return mejor;
+  return { resolucionMaxima, resultados };
 }
 
 export function medirFPS(video: HTMLVideoElement, duracionMs: number): Promise<{ fps: number; caidas: number }> {
@@ -356,24 +404,71 @@ export function evaluarIluminacion(brillo: number) {
 }
 
 export function calcularEstandarMundial(
-  resolucionMaxima: string,
-  fps: number,
+  resultados: ResultadoResolucionFPS[],
   autofocus: boolean,
 ): "cumple" | "parcial" | "no recomendado" {
-  const ladoMayor = Math.max(
-    ...resolucionMaxima
-      .split("x")
-      .map((p) => parseInt(p, 10))
-      .filter((n) => !Number.isNaN(n)),
-    0,
-  );
-  const alMenos720p = ladoMayor >= 720;
-  const alMenos1080p = ladoMayor >= 1080;
-  const alMenos20fps = fps >= 20;
-  const alMenos30fps = fps >= 30;
-  if (alMenos1080p && alMenos30fps) return "cumple";
-  if (alMenos720p && alMenos20fps) return "parcial";
+  const mayorLado = (r: ResultadoResolucionFPS) =>
+    Math.max(
+      ...r.resolucion
+        .split("x")
+        .map((p) => parseInt(p, 10))
+        .filter((n) => !Number.isNaN(n)),
+      0,
+    );
+  const cumpleFullHD = resultados.some((r) => mayorLado(r) >= 1080 && r.fps >= 30);
+  const cumpleMinimo = resultados.some((r) => mayorLado(r) >= 720 && r.fps >= 20);
+  if (cumpleFullHD && autofocus) return "cumple";
+  if (cumpleMinimo) return "parcial";
   return "no recomendado";
+}
+
+export function evaluarFidelidadFPS(maxAnunciado: number | null, resultados: ResultadoResolucionFPS[]): FidelidadFPS {
+  if (maxAnunciado === null || resultados.length === 0) {
+    return { estado: "sin datos", texto: "No se pudo comparar el rendimiento anunciado con el entregado." };
+  }
+  const maxEntregado = Math.max(...resultados.map((r) => r.fps));
+  if (maxEntregado < maxAnunciado * 0.85) {
+    return {
+      estado: "limitada",
+      texto: `Anuncia hasta ${maxAnunciado} FPS pero solo entrega ${maxEntregado}: posible limitación del driver, puerto o bandwidth.`,
+    };
+  }
+  return { estado: "fiel", texto: "Entrega lo que anuncia." };
+}
+
+export function detectarReduccionPorLuz(brillo: number, fps: number, maxAnunciado: number | null): ReduccionPorLuz {
+  const escenaOscura = brillo < 30;
+  const fpsBajos = fps < 20;
+  const porDebajoDeLoAnunciado = maxAnunciado === null || fps < maxAnunciado * 0.8;
+  if (escenaOscura && fpsBajos && porDebajoDeLoAnunciado) {
+    return {
+      activo: true,
+      texto: `La escena es oscura (brillo ${brillo}%) y los FPS obtenidos (${fps}) están muy por debajo de lo anunciado (${
+        maxAnunciado ?? "—"
+      }). Es posible que la cámara reduzca la velocidad de cuadro por falta de luz. Prueba con mejor iluminación y repite el diagnóstico.`,
+    };
+  }
+  return { activo: false, texto: "Sin evidencia de reducción de FPS por falta de luz." };
+}
+
+export function recomendacionCamara(
+  estandar: "cumple" | "parcial" | "no recomendado",
+  resultados: ResultadoResolucionFPS[],
+): string {
+  if (estandar === "cumple") {
+    return "Cumple el estándar mundial (1080p a 30 FPS con autofocus). No necesitas otra cámara.";
+  }
+  const mejor = resultados.reduce<ResultadoResolucionFPS | null>(
+    (acc, r) => (acc === null || r.fps > acc.fps ? r : acc),
+    null,
+  );
+  if (estandar === "parcial") {
+    const res = mejor ? mejor.resolucion : "720p";
+    const fps = mejor ? mejor.fps : 20;
+    return `Alcanza ${res} a ${fps} FPS. Sirve para videollamadas y reuniones estándar, pero no llega a Full HD fluido. Solo necesitas otra cámara si requieres 1080p a 30 FPS.`;
+  }
+  const rendimiento = mejor ? `${mejor.resolucion} a ${mejor.fps} FPS` : "un rendimiento muy bajo";
+  return `No alcanza el mínimo recomendado (720p a 20 FPS); entrega ${rendimiento}. Si usarás la cámara para videollamadas o streaming, considera reemplazarla.`;
 }
 
 export function calcularPuntaje(resultado: {
@@ -417,7 +512,11 @@ export function calcularPuntaje(resultado: {
   return { total, clasificacion };
 }
 
-export function generarResumen(estandarMundial: string, iluminacion: { nivel: string; recomendacion: string }): string {
+export function generarResumen(
+  estandarMundial: string,
+  iluminacion: { nivel: string; recomendacion: string },
+  recomendacion: string,
+): string {
   let texto = "";
   if (estandarMundial === "cumple") {
     texto = "La cámara cumple el estándar mundial.";
@@ -426,6 +525,7 @@ export function generarResumen(estandarMundial: string, iluminacion: { nivel: st
   } else {
     texto = "La cámara no cumple el estándar mundial.";
   }
+  texto += ` ${recomendacion}`;
   if (iluminacion.nivel !== "excelente") {
     texto += ` ${iluminacion.recomendacion}`;
   }
@@ -490,6 +590,10 @@ export function generarPDF(r: DiagnosticoResultado): void {
     `Resolución actual: ${r.resolucionActual}`,
     `Resolución máxima real: ${r.resolucionMaxima}`,
     `FPS obtenidos: ${r.fpsObtenidos} (solicitados: ${r.fpsSolicitados})`,
+    `FPS negociado: ${r.fpsNegociado ?? "No disponible"}`,
+    `Rango de FPS soportado: ${
+      r.fpsRangoMin !== null && r.fpsRangoMax !== null ? `${r.fpsRangoMin}–${r.fpsRangoMax} fps` : "No disponible"
+    }`,
     `Brillo: ${r.brillo}% (${r.brilloEtiqueta})`,
     `Contraste: ${r.contraste}% (${r.contrasteEtiqueta})`,
     `Nitidez: ${r.nitidez}/100 (${r.nitidezEtiqueta})`,
@@ -509,6 +613,29 @@ export function generarPDF(r: DiagnosticoResultado): void {
     doc.addPage();
     y = 20;
   };
+
+  doc.setFontSize(11);
+  doc.text("Resolución vs FPS", 14, y + 3);
+  doc.setFontSize(10);
+  y += 8;
+  if (r.fpsPorResolucion.length === 0) {
+    doc.text("No se pudo medir en ninguna resolución.", 14, y);
+    y += 5;
+  }
+  for (const item of r.fpsPorResolucion) {
+    if (y > 270) nuevoResumen();
+    doc.text(`${item.resolucion} — ${item.fps} fps`, 16, y);
+    y += 5;
+  }
+  if (y > 270) nuevoResumen();
+  doc.text(`Fidelidad de FPS: ${r.fpsFidelidad.texto}`, 14, y);
+  y += 7;
+  if (r.reduccionPorLuz.activo) {
+    const luz = doc.splitTextToSize(`Reducción por luz: ${r.reduccionPorLuz.texto}`, 180);
+    if (y + luz.length * 5 > 270) nuevoResumen();
+    doc.text(luz, 14, y);
+    y += luz.length * 5 + 2;
+  }
 
   doc.setFontSize(12);
   doc.text("Resumen", 14, y + 8);
