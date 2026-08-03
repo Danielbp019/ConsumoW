@@ -1,0 +1,542 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Footer from "../components/Footer.astro";
+import Navbar from "../components/Navbar.astro";
+import "../assets/styles/camara.css";
+---
+
+<Layout title="Diagnóstico de Cámara">
+  <Navbar />
+  <main>
+    <section id="hero" class="hero">
+      <div class="container pb-5">
+        <header class="text-center mb-4">
+          <h2 class="display-4 font-orbitron">Diagnóstico de Cámara</h2>
+          <p class="lead">Conoce el estado y las capacidades reales de tu cámara web.</p>
+        </header>
+
+        <!-- Privacidad -->
+        <div class="alert alert-info d-flex align-items-center gap-2">
+          <i class="bi bi-shield-lock fs-4"></i>
+          <div class="mb-0">
+            Ninguna imagen es enviada a Internet. Todo el procesamiento ocurre localmente en tu navegador. No se
+            almacena información después de cerrar o recargar la página.
+          </div>
+        </div>
+
+        <div class="row">
+          <!-- Columna izquierda: control y vista previa -->
+          <article class="col-lg-5 mb-3 py-3">
+            <div class="card text-bg-dark border-light text-start">
+              <div class="card-header">
+                <h5 class="card-title mb-0">Control</h5>
+              </div>
+              <div class="card-body">
+                <label for="selectCamara" class="form-label">Cámara</label>
+                <select id="selectCamara" class="form-select mb-3" disabled></select>
+                <video id="videoPreview" autoplay playsinline muted></video>
+                <div class="d-flex flex-wrap gap-2 mt-3">
+                  <button id="btnIniciar" type="button" class="btn btn-primary" disabled> Iniciar cámara </button>
+                  <button id="btnDiagnosticar" type="button" class="btn btn-warning" disabled>
+                    Ejecutar diagnóstico
+                  </button>
+                  <button id="btnPdf" type="button" class="btn btn-success" disabled> Descargar reporte PDF </button>
+                </div>
+                <p id="res-descripcion-camaras" class="text-body-secondary small mt-3 mb-0"></p>
+              </div>
+            </div>
+
+            <!-- Puntaje general -->
+            <div class="card text-bg-dark border-light text-start mt-3">
+              <div class="card-header">
+                <h6 class="card-title mb-0">Puntaje general</h6>
+              </div>
+              <div class="card-body">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                  <span id="res-puntaje" class="display-6">—</span>
+                  <span id="res-clasificacion" class="badge text-bg-secondary fs-6">Pendiente</span>
+                </div>
+                <p id="res-resumen" class="mb-0">—</p>
+              </div>
+            </div>
+          </article>
+
+          <!-- Columna derecha: resultados -->
+          <article class="col-lg-7 mb-3 py-3">
+            <div class="row g-3">
+              <!-- Estado -->
+              <div class="col-md-6">
+                <div class="card text-bg-dark border-light text-start h-100">
+                  <div class="card-header">
+                    <h6 class="card-title mb-0">Estado de la cámara</h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <span class="resultado-etiqueta">Cámara</span>
+                      <span id="estado-camara" class="badge text-bg-secondary">Pendiente</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <span class="resultado-etiqueta">Permisos</span>
+                      <span id="estado-permisos" class="badge text-bg-secondary">Pendiente</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="resultado-etiqueta">Streaming</span>
+                      <span id="estado-stream" class="badge text-bg-secondary">Inactivo</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Información técnica -->
+              <div class="col-md-6">
+                <div class="card text-bg-dark border-light text-start h-100">
+                  <div class="card-header">
+                    <h6 class="card-title mb-0">Información técnica</h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="resultado-fila">
+                      <span class="resultado-etiqueta">Resolución actual</span>
+                      <span id="res-info-resolucion">—</span>
+                    </div>
+                    <div class="resultado-fila">
+                      <span class="resultado-etiqueta">Aspect ratio</span>
+                      <span id="res-info-aspect">—</span>
+                    </div>
+                    <div class="resultado-fila">
+                      <span class="resultado-etiqueta">Facing mode</span>
+                      <span id="res-info-facing">—</span>
+                    </div>
+                    <div class="resultado-fila">
+                      <span class="resultado-etiqueta">Autofocus</span>
+                      <span id="res-info-autofocus">—</span>
+                    </div>
+                    <div class="resultado-fila">
+                      <span class="resultado-etiqueta">Zoom</span>
+                      <span id="res-info-zoom">—</span>
+                    </div>
+                    <div class="resultado-fila mb-0">
+                      <span class="resultado-etiqueta">Torch</span>
+                      <span id="res-info-torch">—</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Resolución máxima real -->
+              <div class="col-md-6">
+                <div class="card text-bg-dark border-light text-start h-100">
+                  <div class="card-header">
+                    <h6 class="card-title mb-0">Resolución máxima real</h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="resultado-fila">
+                      <span class="resultado-etiqueta">Máxima alcanzada</span>
+                      <span id="res-max" class="fw-bold">—</span>
+                    </div>
+                    <p class="text-body-secondary small mb-0 mt-2">
+                      Se probaron varias resoluciones para determinar cuál funciona realmente.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- FPS -->
+              <div class="col-md-6">
+                <div class="card text-bg-dark border-light text-start h-100">
+                  <div class="card-header">
+                    <h6 class="card-title mb-0">FPS</h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="resultado-fila">
+                      <span class="resultado-etiqueta">Solicitados</span>
+                      <span id="res-fps-solicitados">—</span>
+                    </div>
+                    <div class="resultado-fila">
+                      <span class="resultado-etiqueta">Obtenidos</span>
+                      <span id="res-fps-obtenidos">—</span>
+                    </div>
+                    <div class="resultado-fila mb-0">
+                      <span class="resultado-etiqueta">Caídas</span>
+                      <span id="res-fps-caidas">—</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Calidad de imagen -->
+              <div class="col-md-6">
+                <div class="card text-bg-dark border-light text-start h-100">
+                  <div class="card-header">
+                    <h6 class="card-title mb-0">Calidad de imagen</h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="resultado-fila">
+                      <span class="resultado-etiqueta">Brillo</span>
+                      <span id="res-brillo">—</span>
+                    </div>
+                    <div class="resultado-fila">
+                      <span class="resultado-etiqueta">Contraste</span>
+                      <span id="res-contraste">—</span>
+                    </div>
+                    <div class="resultado-fila">
+                      <span class="resultado-etiqueta">Nitidez</span>
+                      <span id="res-nitidez">—</span>
+                    </div>
+                    <div class="resultado-fila mb-0">
+                      <span class="resultado-etiqueta">Exposición</span>
+                      <span id="res-exposicion">—</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Iluminación -->
+              <div class="col-md-6">
+                <div class="card text-bg-dark border-light text-start h-100">
+                  <div class="card-header">
+                    <h6 class="card-title mb-0">Iluminación</h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="resultado-fila">
+                      <span class="resultado-etiqueta">Nivel</span>
+                      <span id="res-iluminacion" class="badge text-bg-secondary">Pendiente</span>
+                    </div>
+                    <p id="res-iluminacion-reco" class="text-body-secondary small mb-0 mt-2">—</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Estabilidad de transmisión -->
+              <div class="col-md-6">
+                <div class="card text-bg-dark border-light text-start h-100">
+                  <div class="card-header">
+                    <h6 class="card-title mb-0">Estabilidad de transmisión</h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <span class="resultado-etiqueta">Estado</span>
+                      <span id="res-estabilidad" class="badge text-bg-secondary">Pendiente</span>
+                    </div>
+                    <div class="resultado-fila">
+                      <span class="resultado-etiqueta">FPS promedio</span>
+                      <span id="res-estabilidad-fps">—</span>
+                    </div>
+                    <div class="resultado-fila">
+                      <span class="resultado-etiqueta">Frames perdidos</span>
+                      <span id="res-estabilidad-perdidos">—</span>
+                    </div>
+                    <div class="resultado-fila">
+                      <span class="resultado-etiqueta">Congelamientos</span>
+                      <span id="res-estabilidad-congelamientos">—</span>
+                    </div>
+                    <div class="resultado-fila mb-0">
+                      <span class="resultado-etiqueta">Tiempo de respuesta</span>
+                      <span id="res-estabilidad-resp">—</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Estándar mundial -->
+              <div class="col-md-6">
+                <div class="card text-bg-dark border-light text-start h-100">
+                  <div class="card-header">
+                    <h6 class="card-title mb-0">Estándar mundial</h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <span class="resultado-etiqueta">Resultado</span>
+                      <span id="res-estandar-mundial" class="badge text-bg-secondary">Pendiente</span>
+                    </div>
+                    <p class="text-body-secondary small mb-0 mt-2">
+                      Estándar mundial: 1080p, 30 FPS y autofocus. Mínimo: 720p y 20 FPS.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+    <Footer />
+  </main>
+</Layout>
+
+<script>
+  import {
+    detectarCamaras,
+    iniciarStream,
+    detenerStream,
+    obtenerInfoTecnica,
+    probarResolucionMaxima,
+    medirFPS,
+    analizarCalidadImagen,
+    evaluarIluminacion,
+    medirEstabilidad,
+    clasificarEstabilidad,
+    calcularEstandarMundial,
+    calcularPuntaje,
+    generarResumen,
+    generarPDF,
+    etiquetaIluminacion,
+    etiquetaEstandarMundial,
+    etiquetaEstandarMundialClase,
+    type DiagnosticoResultado,
+  } from "../scripts/cameraDiagnostic";
+
+  let streamActual: MediaStream | null = null;
+  let resultadoActual: DiagnosticoResultado | null = null;
+  let configurado = false;
+
+  function obtenerElementos() {
+    return {
+      selectCamara: document.getElementById("selectCamara") as HTMLSelectElement,
+      videoPreview: document.getElementById("videoPreview") as HTMLVideoElement,
+      btnIniciar: document.getElementById("btnIniciar") as HTMLButtonElement,
+      btnDiagnosticar: document.getElementById("btnDiagnosticar") as HTMLButtonElement,
+      btnPdf: document.getElementById("btnPdf") as HTMLButtonElement,
+    };
+  }
+
+  function setTexto(id: string, texto: string): void {
+    const el = document.getElementById(id);
+    if (el) el.textContent = texto;
+  }
+
+  function setBadge(id: string, texto: string, tipo: string): void {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = texto;
+    el.className = `badge text-bg-${tipo}`;
+  }
+
+  async function cargarCamaras(select: HTMLSelectElement, seleccionado?: string) {
+    const camaras = await detectarCamaras();
+    const previo = seleccionado ?? select.value;
+    select.innerHTML = "";
+    if (camaras.length === 0) {
+      select.innerHTML = '<option value="">No se detectaron cámaras</option>';
+      select.disabled = true;
+      return camaras;
+    }
+    camaras.forEach((c) => {
+      const opcion = document.createElement("option");
+      opcion.value = c.id;
+      opcion.textContent = c.nombre;
+      select.appendChild(opcion);
+    });
+    if (previo && camaras.some((c) => c.id === previo)) {
+      select.value = previo;
+    }
+    select.disabled = false;
+    return camaras;
+  }
+
+  async function configurarPagina() {
+    const el = obtenerElementos();
+    el.videoPreview.srcObject = null;
+    el.btnIniciar.disabled = true;
+    el.btnDiagnosticar.disabled = true;
+    el.btnPdf.disabled = true;
+    try {
+      const camaras = await cargarCamaras(el.selectCamara);
+      if (camaras.length === 0) {
+        setBadge("estado-camara", "Sin cámaras", "danger");
+        setTexto("res-descripcion-camaras", "No se encontró ninguna cámara conectada a este dispositivo.");
+        return;
+      }
+      setBadge("estado-camara", "Cámara detectada", "success");
+      setTexto(
+        "res-descripcion-camaras",
+        `Se detectaron ${camaras.length} cámara(s). Selecciona una e inicia la cámara.`,
+      );
+      el.btnIniciar.disabled = false;
+    } catch {
+      setBadge("estado-camara", "Error al detectar", "danger");
+      setTexto("res-descripcion-camaras", "No fue posible detectar cámaras en este navegador.");
+    }
+  }
+
+  function limpiar() {
+    detenerStream(streamActual);
+    streamActual = null;
+  }
+
+  document.addEventListener("astro:page-load", () => {
+    if (configurado) {
+      limpiar();
+    } else {
+      configurado = true;
+      document.addEventListener("astro:before-swap", limpiar);
+      window.addEventListener("beforeunload", limpiar);
+    }
+    configurarPagina();
+  });
+
+  document.addEventListener("astro:page-load", async () => {
+    const el = obtenerElementos();
+
+    el.btnIniciar.addEventListener("click", async () => {
+      limpiar();
+      const id = el.selectCamara.value || undefined;
+      try {
+        streamActual = await iniciarStream(id);
+      } catch {
+        setBadge("estado-permisos", "Permiso denegado", "danger");
+        setTexto(
+          "res-descripcion-camaras",
+          "No se pudo acceder a la cámara. Revisa los permisos de la cámara en tu navegador.",
+        );
+        return;
+      }
+      el.videoPreview.srcObject = streamActual;
+      await el.videoPreview.play().catch(() => {});
+      await cargarCamaras(el.selectCamara, id);
+      setBadge("estado-permisos", "Permisos concedidos", "success");
+      setBadge("estado-stream", "Streaming activo", "success");
+      setTexto("res-descripcion-camaras", "Cámara activa. Presiona 'Ejecutar diagnóstico' para comenzar.");
+      el.btnDiagnosticar.disabled = false;
+    });
+
+    el.btnDiagnosticar.addEventListener("click", async () => {
+      if (!streamActual) return;
+      const boton = el.btnDiagnosticar;
+      boton.disabled = true;
+      boton.textContent = "Diagnosticando...";
+      setTexto("res-descripcion-camaras", "Ejecutando pruebas, por favor espera...");
+
+      let exito = false;
+
+      try {
+        const info = obtenerInfoTecnica(streamActual, el.videoPreview);
+        setTexto("res-info-resolucion", info.resolucionActual);
+        setTexto("res-info-aspect", info.aspectRatio);
+        setTexto("res-info-facing", info.facingMode);
+        setTexto("res-info-autofocus", info.autofocus ? "Disponible" : "No disponible");
+        setTexto("res-info-zoom", info.zoom ? "Disponible" : "No disponible");
+        setTexto("res-info-torch", info.torch ? "Disponible" : "No disponible");
+
+        const resolucionMaxima = await probarResolucionMaxima(streamActual, el.videoPreview);
+        setTexto("res-max", resolucionMaxima);
+
+        const fpsSolicitados = 30;
+        const fps = await medirFPS(el.videoPreview, 5000);
+        setTexto("res-fps-solicitados", String(fpsSolicitados));
+        setTexto("res-fps-obtenidos", `${fps.fps} fps`);
+        setTexto("res-fps-caidas", String(fps.caidas));
+
+        const calidad = analizarCalidadImagen(el.videoPreview);
+        setTexto("res-brillo", `${calidad.brillo}% (${calidad.brilloEtiqueta})`);
+        setTexto("res-contraste", `${calidad.contraste}% (${calidad.contrasteEtiqueta})`);
+        setTexto("res-nitidez", `${calidad.nitidez}/100 (${calidad.nitidezEtiqueta})`);
+        setTexto("res-exposicion", calidad.exposicion);
+
+        const iluminacion = evaluarIluminacion(calidad.brillo);
+        const claseIluminacion =
+          iluminacion.nivel === "excelente" ? "success" : iluminacion.nivel === "aceptable" ? "warning" : "danger";
+        setBadge("res-iluminacion", etiquetaIluminacion(iluminacion.nivel), claseIluminacion);
+        setTexto("res-iluminacion-reco", iluminacion.recomendacion);
+
+        const estab = await medirEstabilidad(el.videoPreview, 10000);
+        const estadoEstabilidad = clasificarEstabilidad(estab.fps, estab.congelamientos);
+        const claseEstabilidad =
+          estadoEstabilidad === "Excelente"
+            ? "success"
+            : estadoEstabilidad === "Buena"
+              ? "info"
+              : estadoEstabilidad === "Regular"
+                ? "warning"
+                : "danger";
+        setBadge("res-estabilidad", estadoEstabilidad, claseEstabilidad);
+        setTexto("res-estabilidad-fps", `${estab.fps} fps`);
+        setTexto("res-estabilidad-perdidos", String(estab.framesPerdidos));
+        setTexto("res-estabilidad-congelamientos", String(estab.congelamientos));
+        setTexto("res-estabilidad-resp", `${estab.tiempoRespuesta} ms`);
+
+        const estandarMundial = calcularEstandarMundial(resolucionMaxima, fps.fps, info.autofocus);
+        setBadge(
+          "res-estandar-mundial",
+          etiquetaEstandarMundial(estandarMundial),
+          etiquetaEstandarMundialClase(estandarMundial),
+        );
+
+        const puntaje = calcularPuntaje({
+          resolucionMaxima,
+          fpsObtenidos: fps.fps,
+          nitidez: calidad.nitidez,
+          contraste: calidad.contraste,
+          brillo: calidad.brillo,
+          estabilidadEstado: estadoEstabilidad,
+        });
+        setTexto("res-puntaje", `${puntaje.total}/100`);
+        const claseClasificacion =
+          puntaje.clasificacion === "Excelente"
+            ? "success"
+            : puntaje.clasificacion === "Muy buena"
+              ? "info"
+              : puntaje.clasificacion === "Aceptable"
+                ? "warning"
+                : "danger";
+        setBadge("res-clasificacion", puntaje.clasificacion, claseClasificacion);
+
+        const resumen = generarResumen(estandarMundial, iluminacion);
+        setTexto("res-resumen", resumen);
+
+        resultadoActual = {
+          nombreCamara: el.selectCamara.selectedOptions[0]?.textContent ?? "Cámara",
+          resolucionActual: info.resolucionActual,
+          resolucionMaxima,
+          aspectRatio: info.aspectRatio,
+          facingMode: info.facingMode,
+          autofocus: info.autofocus,
+          zoom: info.zoom,
+          torch: info.torch,
+          fpsSolicitados,
+          fpsObtenidos: fps.fps,
+          fpsCaidas: fps.caidas,
+          brillo: calidad.brillo,
+          brilloEtiqueta: calidad.brilloEtiqueta,
+          contraste: calidad.contraste,
+          contrasteEtiqueta: calidad.contrasteEtiqueta,
+          nitidez: calidad.nitidez,
+          nitidezEtiqueta: calidad.nitidezEtiqueta,
+          exposicion: calidad.exposicion,
+          iluminacionNivel: iluminacion.nivel,
+          iluminacionRecomendacion: iluminacion.recomendacion,
+          estabilidadEstado: estadoEstabilidad,
+          estabilidadFps: estab.fps,
+          estabilidadFramesPerdidos: estab.framesPerdidos,
+          estabilidadCongelamientos: estab.congelamientos,
+          estandarMundial,
+          puntaje: puntaje.total,
+          clasificacion: puntaje.clasificacion,
+          resumen,
+        };
+
+        el.btnPdf.disabled = false;
+        exito = true;
+        setTexto("res-descripcion-camaras", "Diagnóstico completado. Puedes descargar el reporte PDF.");
+      } catch {
+        setTexto("res-descripcion-camaras", "Ocurrió un error durante el diagnóstico. Intenta nuevamente.");
+      } finally {
+        boton.textContent = "Ejecutar diagnóstico";
+        boton.disabled = false;
+      }
+
+      if (exito) {
+        limpiar();
+        el.videoPreview.srcObject = null;
+        setBadge("estado-stream", "Inactivo", "secondary");
+        el.btnDiagnosticar.disabled = true;
+        setTexto("res-descripcion-camaras", "Diagnóstico completado. La cámara se ha detenido automáticamente.");
+      }
+    });
+
+    el.btnPdf.addEventListener("click", () => {
+      if (resultadoActual) {
+        generarPDF(resultadoActual);
+      }
+    });
+  });
+</script>

@@ -32,6 +32,11 @@ const pathname = Astro.url.pathname;
             ><i class="bi bi-pc-display me-2"></i>Presupuesto</a
           >
         </li>
+        <li class="nav-item">
+          <a class={`nav-link ${pathname.startsWith("/camara") ? "active" : ""}`} href="/camara/"
+            ><i class="bi bi-camera-video-fill me-2"></i>Cámara</a
+          >
+        </li>
       </ul>
     </div>
   </div>

@@ -4,6 +4,7 @@ import Footer from "../components/Footer.astro";
 import Navbar from "../components/Navbar.astro";
 import rayosImg from "../assets/img/rayos.jpg";
 import pcImg from "../assets/img/pc.jpg";
+import camara from "../assets/img/camara.png";
 ---
 
 <Layout title="Timber-Tec">
@@ -18,8 +19,8 @@ import pcImg from "../assets/img/pc.jpg";
             <h1 class="display-4 font-orbitron">Timber-Tec</h1>
             <p class="lead">
               Esta página está pensada para facilitarte herramientas prácticas y rápidas. Aquí encontrarás utilidades
-              como la calculadora de consumo eléctrico y la calculadora de presupuesto para PC. Todo en un mismo lugar,
-              accesible y optimizado para que ahorres tiempo.
+              especializadas en el mundo del PC y sus periféricos, todo en un mismo lugar y con una variedad que irá
+              creciendo continuamente, optimizadas para que ahorres tiempo en tus decisiones.
             </p>
           </div>
           <!-- Columna Derecha: Tabs -->
@@ -49,6 +50,18 @@ import pcImg from "../assets/img/pc.jpg";
                       role="tab"
                       aria-controls="presupuesto-pane"
                       aria-selected="false">Presupuesto</button
+                    >
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button
+                      class="nav-link"
+                      id="camara-tab"
+                      data-bs-toggle="tab"
+                      data-bs-target="#camara-pane"
+                      type="button"
+                      role="tab"
+                      aria-controls="camara-pane"
+                      aria-selected="false">Cámara</button
                     >
                   </li>
                 </ul>
@@ -85,6 +98,21 @@ import pcImg from "../assets/img/pc.jpg";
                     diferentes presupuestos y usos.
                   </p>
                   <a href="presupuesto/" class="btn btn-warning">Ir al Presupuesto</a>
+                </div>
+                <div
+                  class="tab-pane fade p-4 rounded tab-pane-background"
+                  id="camara-pane"
+                  role="tabpanel"
+                  aria-labelledby="camara-tab"
+                  tabindex="0"
+                  style={`--bg-image: url(${camara.src});`}
+                >
+                  <h5 class="card-title">Diagnóstico de Cámara</h5>
+                  <p class="card-text">
+                    Conoce el estado y las capacidades reales de tu cámara web. Detecta resoluciones, FPS, calidad de
+                    imagen e iluminación, y descarga un reporte PDF con los resultados.
+                  </p>
+                  <a href="camara/" class="btn btn-warning">Ir al Diagnóstico</a>
                 </div>
               </div>
             </div>

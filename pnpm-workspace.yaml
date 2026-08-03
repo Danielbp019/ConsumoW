@@ -1,7 +1,4 @@
 allowBuilds:
+  core-js: true
   esbuild: true
   sharp: true
-pnpm:
-  onlyBuiltDependencies:
-    - esbuild
-    - sharp

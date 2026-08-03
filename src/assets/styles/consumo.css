@@ -91,6 +91,31 @@ lite-youtube {
   background-position: center;
 }
 
+/* Tabs del index: tipografía y altura estable al cambiar de pestaña */
+#hero-tabs-content .card-title {
+  font-size: 1.75rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+#hero-tabs-content .card-text {
+  font-size: 1.125rem;
+  margin: 0 0 1.25rem;
+}
+
+#hero-tabs-content {
+  display: grid;
+}
+
+#hero-tabs-content .tab-pane {
+  display: block;
+  grid-area: 1 / 1;
+}
+
+#hero-tabs-content .tab-pane:not(.active) {
+  visibility: hidden;
+}
+
 /* Navbar Active Neon Effect */
 .navbar-nav .nav-link.active {
   color: #fff8e7 !important;

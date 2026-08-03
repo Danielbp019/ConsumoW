@@ -5,7 +5,7 @@
 - Evitar poner código CSS en archivos que no sean .css (solo se permite `style=""` para variables CSS como `--bg-image`).
 - Usa siempre pnpm como gestor de paquetes (nunca npm/yarn).
 - Después de editar código, ejecuta `pnpm format:check` (o `pnpm format` si hay que corregir).
-- Verifica los cambios con `pnpm build` antes de terminar.
+- Verifica los cambios con `pnpm typecheck` y `pnpm build` antes de terminar.
 - Los textos de la interfaz y los comentarios van en español (`<html lang="es">`).
 - No cambies los finales de línea: el proyecto usa CRLF (Windows).
 
@@ -36,4 +36,5 @@
 - @astrojs/sitemap
 - pnpm
 - Prettier + prettier-plugin-astro
+- TypeScript
 - sharp
