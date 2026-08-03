@@ -1,0 +1,7 @@
+allowBuilds:
+  esbuild: true
+  sharp: true
+pnpm:
+  onlyBuiltDependencies:
+    - esbuild
+    - sharp
