@@ -6,7 +6,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@astrojs/sitemap": "3.7.2",
@@ -15,5 +17,9 @@
     "bootstrap-icons": "^1.13.1",
     "lite-youtube-embed": "^0.3.4",
     "sharp": "^0.35.3"
+  },
+  "devDependencies": {
+    "prettier": "3.9.6",
+    "prettier-plugin-astro": "0.14.1"
   }
 }
