@@ -1,4 +1,5 @@
 import { jsPDF } from "jspdf";
+import { dibujarTitulo, dibujarMeta, dibujarSeccion, textoDetalle, textoEnvoltura, nuevaPagina } from "./pdfEstilo";
 
 export interface CamaraDispositivo {
   id: string;
@@ -576,16 +577,14 @@ export function tareasSegunCamara(resolucionMaxima: string, fps: number): string
 export function generarPDF(r: DiagnosticoResultado): void {
   const doc = new jsPDF();
   const fecha = new Date();
-  doc.setFontSize(16);
-  doc.text("TimberTec - Diagnóstico de Cámara", 14, 20);
-  doc.setFontSize(10);
-  doc.text(`Fecha: ${fecha.toLocaleDateString("es-ES")}`, 14, 28);
-  doc.text(`Hora: ${fecha.toLocaleTimeString("es-ES")}`, 14, 34);
-  doc.text(`Cámara: ${r.nombreCamara}`, 14, 40);
+  let y = dibujarTitulo(doc, "TimberTec - Diagnóstico de Cámara", 20);
+  y = dibujarMeta(doc, y, [
+    ["Fecha", `${fecha.toLocaleDateString("es-ES")} — Hora: ${fecha.toLocaleTimeString("es-ES")}`],
+    ["Cámara", r.nombreCamara],
+  ]);
 
-  doc.setFontSize(12);
-  doc.text("Resultados", 14, 52);
-  doc.setFontSize(10);
+  y = dibujarSeccion(doc, y, "Resultados");
+  textoDetalle(doc);
   const lineas = [
     `Resolución actual: ${r.resolucionActual}`,
     `Resolución máxima real: ${r.resolucionMaxima}`,
@@ -603,21 +602,19 @@ export function generarPDF(r: DiagnosticoResultado): void {
     `Estándar mundial: ${etiquetaEstandarMundial(r.estandarMundial)}`,
     `Puntaje general: ${r.puntaje}/100 (${r.clasificacion})`,
   ];
-  let y = 58;
   for (const linea of lineas) {
     doc.text(linea, 14, y);
     y += 7;
   }
 
   const nuevoResumen = () => {
-    doc.addPage();
+    nuevaPagina(doc);
     y = 20;
   };
 
-  doc.setFontSize(11);
-  doc.text("Resolución vs FPS", 14, y + 3);
-  doc.setFontSize(10);
-  y += 8;
+  y += 4;
+  y = dibujarSeccion(doc, y, "Resolución vs FPS");
+  textoDetalle(doc);
   if (r.fpsPorResolucion.length === 0) {
     doc.text("No se pudo medir en ninguna resolución.", 14, y);
     y += 5;
@@ -631,50 +628,43 @@ export function generarPDF(r: DiagnosticoResultado): void {
   doc.text(`Fidelidad de FPS: ${r.fpsFidelidad.texto}`, 14, y);
   y += 7;
   if (r.reduccionPorLuz.activo) {
-    const luz = doc.splitTextToSize(`Reducción por luz: ${r.reduccionPorLuz.texto}`, 180);
+    const luz = textoEnvoltura(doc, `Reducción por luz: ${r.reduccionPorLuz.texto}`);
     if (y + luz.length * 5 > 270) nuevoResumen();
     doc.text(luz, 14, y);
     y += luz.length * 5 + 2;
   }
 
-  doc.setFontSize(12);
-  doc.text("Resumen", 14, y + 8);
-  doc.setFontSize(10);
-  y += 16;
+  y += 4;
+  y = dibujarSeccion(doc, y, "Resumen");
+  textoDetalle(doc);
 
-  const estado = doc.splitTextToSize(`Tu cámara: ${r.resumen}`, 180);
+  const estado = textoEnvoltura(doc, `Tu cámara: ${r.resumen}`);
   if (y + estado.length * 5 > 270) nuevoResumen();
   doc.text(estado, 14, y);
   y += estado.length * 5 + 8;
 
-  doc.setFontSize(11);
-  doc.text("¿Qué es el estándar mundial?", 14, y);
-  doc.setFontSize(10);
-  y += 5;
-  const estandar = doc.splitTextToSize(
+  y = dibujarSeccion(doc, y, "¿Qué es el estándar mundial?");
+  textoDetalle(doc);
+  const estandar = textoEnvoltura(
+    doc,
     "El estándar mundial para cámaras web de uso cotidiano recomienda 1080p a 30 FPS con autofocus y considera 720p a 20 FPS como el mínimo aceptable. La resolución define la nitidez de la imagen y los FPS (fotogramas por segundo) la fluidez del movimiento.",
-    180,
   );
   if (y + estandar.length * 5 > 270) nuevoResumen();
   doc.text(estandar, 14, y);
   y += estandar.length * 5 + 8;
 
-  doc.setFontSize(11);
-  doc.text("¿Para qué se usan esas resoluciones y FPS?", 14, y);
-  doc.setFontSize(10);
-  y += 5;
-  const usos = doc.splitTextToSize(
+  y = dibujarSeccion(doc, y, "¿Para qué se usan esas resoluciones y FPS?");
+  textoDetalle(doc);
+  const usos = textoEnvoltura(
+    doc,
     "720p es suficiente para videollamadas estándar, reuniones y clases en línea. 1080p (Full HD) ofrece imagen nítida para videollamadas de alta calidad, streaming y grabación de contenido. Los 30 FPS garantizan movimiento fluido y natural, y el autofocus mantiene el enfoque automático al moverte.",
-    180,
   );
   if (y + usos.length * 5 > 270) nuevoResumen();
   doc.text(usos, 14, y);
   y += usos.length * 5 + 8;
 
-  doc.setFontSize(11);
-  doc.text("Tu cámara actual está bien para:", 14, y);
-  doc.setFontSize(10);
-  y += 5;
+  y = dibujarSeccion(doc, y, "Tu cámara actual está bien para:");
+  textoDetalle(doc);
   for (const tarea of tareasSegunCamara(r.resolucionMaxima, r.fpsObtenidos)) {
     if (y > 270) nuevoResumen();
     doc.text(`- ${tarea}`, 16, y);

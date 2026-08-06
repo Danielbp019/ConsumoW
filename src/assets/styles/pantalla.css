@@ -1,0 +1,84 @@
+.resultado-fila {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.resultado-etiqueta {
+  color: var(--bs-secondary-color);
+}
+
+.pantalla-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  background: #000;
+}
+
+.pantalla-overlay[hidden] {
+  display: none;
+}
+
+.pantalla-zona-prueba {
+  flex: 1;
+}
+
+.pantalla-patron-gris {
+  background-color: #333;
+}
+
+.pantalla-patron-rojo {
+  background-color: #ff0000;
+}
+
+.pantalla-patron-verde {
+  background-color: #00ff00;
+}
+
+.pantalla-patron-azul {
+  background-color: #0000ff;
+}
+
+.pantalla-patron-blanco {
+  background-color: #ffffff;
+}
+
+.pantalla-patron-negro {
+  background-color: #000000;
+}
+
+.pantalla-patron-gradiente {
+  background-image: linear-gradient(180deg, #000000 0%, #ffffff 100%);
+}
+
+.pantalla-patron-sangrado {
+  background-color: #000000;
+}
+
+.pantalla-barra {
+  flex: 0 0 auto;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 1rem;
+  text-align: center;
+}
+
+.overlay-titulo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.overlay-info {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.overlay-acciones {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}

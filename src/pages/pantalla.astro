@@ -1,0 +1,483 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Footer from "../components/Footer.astro";
+import Navbar from "../components/Navbar.astro";
+import "../assets/styles/pantalla.css";
+---
+
+<Layout title="Diagnóstico de Pantalla">
+  <Navbar />
+  <main>
+    <section id="hero" class="hero">
+      <div class="container pb-5">
+        <header class="text-center mb-4">
+          <h1 class="display-4 font-orbitron">Diagnóstico de Pantalla</h1>
+          <p class="lead">
+            Revisa el estado de tu monitor: frecuencia de actualización, resolución y posibles defectos del panel.
+          </p>
+        </header>
+
+        <!-- Privacidad -->
+        <div class="alert alert-info d-flex align-items-center gap-2">
+          <i class="bi bi-shield-lock fs-4"></i>
+          <div class="mb-0">
+            Ninguna imagen es enviada a Internet. Todo el procesamiento ocurre localmente en tu navegador. No se
+            almacena información después de cerrar o recargar la página.
+          </div>
+        </div>
+
+        <div class="row">
+          <!-- Columna izquierda: control -->
+          <article class="col-lg-5 mb-3 py-3">
+            <div class="card text-bg-dark border-light text-start">
+              <div class="card-header">
+                <h2 class="h5 card-title mb-0">Control</h2>
+              </div>
+              <div class="card-body">
+                <p class="card-text small">
+                  Pulsa el botón para iniciar la batería de pruebas. Se mostrará un aviso y la pantalla entrará en modo
+                  de pruebas automáticas.
+                </p>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="resultado-etiqueta">Estado de la batería</span>
+                  <span id="estado-bateria" class="badge text-bg-secondary">Inactiva</span>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                  <button id="btnIniciar" type="button" class="btn btn-primary">
+                    Iniciar batería de pruebas
+                    <i class="bi bi-play-fill"></i>
+                  </button>
+                  <button id="btnPdf" type="button" class="btn btn-success" disabled>
+                    Descargar reporte PDF
+                    <i class="bi bi-file-earmark-arrow-down"></i>
+                  </button>
+                </div>
+                <p id="res-descripcion-bateria" class="text-body-secondary small mt-3 mb-0" aria-live="polite">
+                  La batería mide la frecuencia de actualización y guía la revisión visual del panel.
+                </p>
+              </div>
+            </div>
+          </article>
+
+          <!-- Columna derecha: resultados -->
+          <article class="col-lg-7 mb-3 py-3">
+            <div class="row g-3">
+              <!-- Monitor y pantalla -->
+              <div class="col-md-6">
+                <div class="card text-bg-dark border-light text-start h-100">
+                  <div class="card-header">
+                    <h2 class="h6 card-title mb-0">Monitor y pantalla</h2>
+                  </div>
+                  <div class="card-body">
+                    <div class="resultado-fila">
+                      <span class="resultado-etiqueta">
+                        Resolución nativa
+                        <i
+                          class="bi bi-info-circle-fill"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="right"
+                          data-bs-title="Tamaño real del panel en píxeles (ancho × alto)."></i>
+                      </span>
+                      <span id="res-info-resolucion">—</span>
+                    </div>
+                    <div class="resultado-fila">
+                      <span class="resultado-etiqueta">
+                        Densidad de píxeles (dpr)
+                        <i
+                          class="bi bi-info-circle-fill"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="right"
+                          data-bs-title="Píxeles físicos por píxel CSS: 1 es escala normal; 2+ indica pantalla de alta densidad."
+                        ></i>
+                      </span>
+                      <span id="res-info-dpr">—</span>
+                    </div>
+                    <div class="resultado-fila">
+                      <span class="resultado-etiqueta">
+                        Profundidad de color
+                        <i
+                          class="bi bi-info-circle-fill"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="right"
+                          data-bs-title="Bits por píxel: más bits, más tonos de color reproducibles (24 bits = 16,7 millones)."
+                        ></i>
+                      </span>
+                      <span id="res-info-color">—</span>
+                    </div>
+                    <div class="resultado-fila mb-0">
+                      <span class="resultado-etiqueta">
+                        Relación de aspecto
+                        <i
+                          class="bi bi-info-circle-fill"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="right"
+                          data-bs-title="Proporción ancho/alto de la pantalla (por ejemplo, 16:9)."></i>
+                      </span>
+                      <span id="res-info-aspect">—</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tasa de refresco -->
+              <div class="col-md-6">
+                <div class="card text-bg-dark border-light text-start h-100">
+                  <div class="card-header">
+                    <h2 class="h6 card-title mb-0">Tasa de refresco</h2>
+                  </div>
+                  <div class="card-body">
+                    <div class="resultado-fila">
+                      <span class="resultado-etiqueta">
+                        Frecuencia estimada
+                        <i
+                          class="bi bi-info-circle-fill"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="right"
+                          data-bs-title="Cuántas veces se actualiza la pantalla por segundo (Hz). Más alto, movimiento más fluido."
+                        ></i>
+                      </span>
+                      <span id="res-fps-hz">—</span>
+                    </div>
+                    <div class="resultado-fila">
+                      <span class="resultado-etiqueta">
+                        Intervalo medio
+                        <i
+                          class="bi bi-info-circle-fill"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="right"
+                          data-bs-title="Tiempo promedio entre actualizaciones consecutivas, en milisegundos."></i>
+                      </span>
+                      <span id="res-fps-intervalo">—</span>
+                    </div>
+                    <div class="resultado-fila">
+                      <span class="resultado-etiqueta">
+                        Frames saltados
+                        <i
+                          class="bi bi-info-circle-fill"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="right"
+                          data-bs-title="Actualizaciones perdidas durante la medición; un valor alto indica inestabilidad."
+                        ></i>
+                      </span>
+                      <span id="res-fps-saltados">—</span>
+                    </div>
+                    <div class="resultado-fila mb-0">
+                      <span class="resultado-etiqueta">
+                        Frames medidos
+                        <i
+                          class="bi bi-info-circle-fill"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="right"
+                          data-bs-title="Total de actualizaciones contadas durante la medición."></i>
+                      </span>
+                      <span id="res-fps-frames">—</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pruebas visuales -->
+              <div class="col-md-12">
+                <div class="card text-bg-dark border-light text-start h-100">
+                  <div class="card-header">
+                    <h2 class="h6 card-title mb-0">Pruebas visuales</h2>
+                  </div>
+                  <div class="card-body" id="res-pruebas-lista">
+                    <span class="text-body-secondary">Sin datos</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Veredicto -->
+              <div class="col-md-12">
+                <div class="card text-bg-dark border-light text-start h-100">
+                  <div class="card-header">
+                    <h2 class="h6 card-title mb-0">Veredicto</h2>
+                  </div>
+                  <div class="card-body">
+                    <p id="res-veredicto" class="text-body-secondary small mb-0" aria-live="polite">—</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+    <Footer />
+  </main>
+
+  <!-- Modal de aviso -->
+  <div class="modal fade" id="modalAviso" tabindex="-1" aria-labelledby="modalAvisoTitulo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content text-bg-dark border-light">
+        <div class="modal-header">
+          <h2 class="modal-title h5" id="modalAvisoTitulo">Batería de pruebas de pantalla</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <ul class="mb-0">
+            <li>Se pedirá entrar en <strong>pantalla completa</strong>.</li>
+            <li>Primero se mide de forma automática la frecuencia de actualización.</li>
+            <li>
+              Después se recorren patrones de color; responde en cada uno <strong>Bien</strong> o
+              <strong>Con defecto</strong> según lo que veas.
+            </li>
+            <li>Al terminar volverás a la página con los resultados y podrás descargar un PDF.</li>
+            <li>Nada de lo visto se guarda ni se envía a Internet.</li>
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" id="btnComenzar" class="btn btn-primary">Comenzar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay de pruebas en pantalla completa -->
+  <div id="overlayPantalla" class="pantalla-overlay" hidden>
+    <div id="zonaPrueba" class="pantalla-zona-prueba pantalla-patron-gris"></div>
+    <div class="pantalla-barra">
+      <div id="overlayTitulo" class="overlay-titulo" aria-live="polite">Preparando...</div>
+      <div id="overlayInfo" class="overlay-info" aria-live="polite">Se pedirá pantalla completa.</div>
+      <div class="overlay-acciones">
+        <button id="btnBien" type="button" class="btn btn-success" hidden>Bien <i class="bi bi-check-lg"></i></button>
+        <button id="btnDefecto" type="button" class="btn btn-danger" hidden>
+          Con defecto <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import {
+    obtenerInfoMonitor,
+    estimarTasaRefresco,
+    PRUEBAS_PANTALLA,
+    generarVeredicto,
+    generarPDF,
+    type PantallaResultado,
+    type PruebaPantalla,
+  } from "../scripts/pantallaDiagnostico";
+
+  let configurado = false;
+  let bateriaEnCurso = false;
+  let cancelada = false;
+  let resultadoActual: PantallaResultado | null = null;
+
+  function obtenerElementos() {
+    return {
+      btnIniciar: document.getElementById("btnIniciar") as HTMLButtonElement,
+      btnPdf: document.getElementById("btnPdf") as HTMLButtonElement,
+      modalAviso: document.getElementById("modalAviso") as HTMLElement,
+      btnComenzar: document.getElementById("btnComenzar") as HTMLButtonElement,
+      overlay: document.getElementById("overlayPantalla") as HTMLDivElement,
+      zonaPrueba: document.getElementById("zonaPrueba") as HTMLDivElement,
+      overlayTitulo: document.getElementById("overlayTitulo") as HTMLDivElement,
+      overlayInfo: document.getElementById("overlayInfo") as HTMLDivElement,
+      btnBien: document.getElementById("btnBien") as HTMLButtonElement,
+      btnDefecto: document.getElementById("btnDefecto") as HTMLButtonElement,
+    };
+  }
+
+  function setTexto(id: string, texto: string): void {
+    const el = document.getElementById(id);
+    if (el) el.textContent = texto;
+  }
+
+  function setBadge(id: string, texto: string, tipo: string): void {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = texto;
+    el.className = `badge text-bg-${tipo}`;
+  }
+
+  function etiquetaEstado(estado: string): string {
+    if (estado === "correcto") return "Correcta";
+    if (estado === "defecto") return "Con defecto";
+    return "Pendiente";
+  }
+
+  function actualizarPruebasVisuales(pruebas: PruebaPantalla[]): void {
+    const contenedor = document.getElementById("res-pruebas-lista");
+    if (!contenedor) return;
+    contenedor.innerHTML = "";
+    if (pruebas.length === 0) {
+      contenedor.innerHTML = '<span class="text-body-secondary">Sin datos</span>';
+      return;
+    }
+    for (const prueba of pruebas) {
+      const fila = document.createElement("div");
+      fila.className = "resultado-fila";
+      const etiqueta = document.createElement("span");
+      etiqueta.className = "resultado-etiqueta";
+      etiqueta.textContent = prueba.nombre;
+      const estado = document.createElement("span");
+      const clase = prueba.estado === "correcto" ? "success" : prueba.estado === "defecto" ? "danger" : "secondary";
+      estado.className = `badge text-bg-${clase}`;
+      estado.textContent = etiquetaEstado(prueba.estado);
+      fila.append(etiqueta, estado);
+      contenedor.appendChild(fila);
+    }
+  }
+
+  function esperarRespuesta(): Promise<"correcto" | "defecto"> {
+    const el = obtenerElementos();
+    return new Promise((resolve) => {
+      const limpiar = () => {
+        el.btnBien.removeEventListener("click", alBien);
+        el.btnDefecto.removeEventListener("click", alDefecto);
+        document.removeEventListener("keydown", alTecla);
+      };
+      const alBien = () => {
+        limpiar();
+        resolve("correcto");
+      };
+      const alDefecto = () => {
+        limpiar();
+        resolve("defecto");
+      };
+      const alTecla = (e: KeyboardEvent) => {
+        if (e.key === "ArrowLeft" || e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          alBien();
+        } else if (e.key === "ArrowRight") {
+          e.preventDefault();
+          alDefecto();
+        }
+      };
+      el.btnBien.addEventListener("click", alBien);
+      el.btnDefecto.addEventListener("click", alDefecto);
+      document.addEventListener("keydown", alTecla);
+      el.btnBien.focus();
+    });
+  }
+
+  function cancelarBateria(mensaje: string): void {
+    const el = obtenerElementos();
+    cancelada = true;
+    bateriaEnCurso = false;
+    setBadge("estado-bateria", "Cancelada", "secondary");
+    setTexto("res-descripcion-bateria", mensaje);
+    el.overlay.hidden = true;
+  }
+
+  async function iniciarBateria(): Promise<void> {
+    const el = obtenerElementos();
+    if (bateriaEnCurso) return;
+    bateriaEnCurso = true;
+    cancelada = false;
+    setBadge("estado-bateria", "En curso", "warning");
+    setTexto("res-descripcion-bateria", "Ejecutando la batería de pruebas. Espera por favor...");
+
+    const pruebas = PRUEBAS_PANTALLA.map((p) => ({ ...p, estado: "pendiente" as const }));
+
+    el.overlay.hidden = false;
+    el.zonaPrueba.className = "pantalla-zona-prueba pantalla-patron-gris";
+    el.overlayTitulo.textContent = "Preparando pantalla completa...";
+    el.overlayInfo.textContent =
+      "Se pedirá pantalla completa. Si el navegador lo permite, la prueba llenará la pantalla.";
+    el.btnBien.hidden = true;
+    el.btnDefecto.hidden = true;
+
+    try {
+      await el.overlay.requestFullscreen();
+    } catch {
+      // Si no hay pantalla completa, la prueba continúa dentro de la ventana.
+    }
+
+    // Mediciones automáticas
+    el.overlayTitulo.textContent = "Midiendo la frecuencia de actualización...";
+    el.overlayInfo.textContent = "Mantén la pestaña visible unos segundos.";
+    const medicion = await estimarTasaRefresco(3000);
+    if (cancelada) return;
+    const info = obtenerInfoMonitor();
+    setTexto("res-info-resolucion", info.resolucionNativa);
+    setTexto("res-info-dpr", String(info.dpr));
+    setTexto("res-info-color", `${info.profundidadColor} bits`);
+    setTexto("res-info-aspect", info.aspectRatio);
+    setTexto("res-fps-hz", medicion.hz !== null ? `${medicion.hz} Hz` : "No disponible");
+    setTexto("res-fps-intervalo", `${medicion.intervaloMedio} ms`);
+    setTexto("res-fps-saltados", String(medicion.framesSaltados));
+    setTexto("res-fps-frames", String(medicion.frames));
+
+    // Pruebas visuales
+    for (const prueba of pruebas) {
+      if (cancelada) return;
+      el.zonaPrueba.className = `pantalla-zona-prueba ${prueba.patron}`;
+      el.overlayTitulo.textContent = prueba.nombre;
+      el.overlayInfo.textContent = `${prueba.instruccion} Responde con los botones o con las flechas ← (Bien) y → (Con defecto).`;
+      el.btnBien.hidden = false;
+      el.btnDefecto.hidden = false;
+      const respuesta = await esperarRespuesta();
+      if (cancelada) return;
+      prueba.estado = respuesta;
+    }
+
+    // Fin de la batería
+    bateriaEnCurso = false;
+    if (document.fullscreenElement) {
+      await document.exitFullscreen().catch(() => {});
+    }
+    el.overlay.hidden = true;
+    actualizarPruebasVisuales(pruebas);
+
+    const veredicto = generarVeredicto(pruebas, medicion.hz);
+    setTexto("res-veredicto", veredicto);
+    setBadge("estado-bateria", "Completada", "success");
+    setTexto("res-descripcion-bateria", "Batería de pruebas completada. Puedes descargar el reporte PDF.");
+
+    resultadoActual = {
+      resolucionNativa: info.resolucionNativa,
+      dpr: info.dpr,
+      profundidadColor: info.profundidadColor,
+      aspectRatio: info.aspectRatio,
+      refreshRate: medicion.hz,
+      intervaloRefresco: medicion.intervaloMedio,
+      framesSaltados: medicion.framesSaltados,
+      framesMedidos: medicion.frames,
+      pruebasVisuales: pruebas,
+      veredicto,
+    };
+    el.btnPdf.disabled = false;
+  }
+
+  document.addEventListener("astro:page-load", () => {
+    const el = obtenerElementos();
+
+    if (!configurado) {
+      configurado = true;
+
+      document.addEventListener("fullscreenchange", () => {
+        if (bateriaEnCurso && !cancelada && !document.fullscreenElement) {
+          cancelarBateria("Batería cancelada: se salió de pantalla completa antes de terminar.");
+        }
+      });
+
+      document.addEventListener("astro:before-swap", () => {
+        cancelada = true;
+        bateriaEnCurso = false;
+      });
+    }
+
+    el.btnIniciar.addEventListener("click", () => {
+      const modal = (window as unknown as { bootstrap: any }).bootstrap.Modal.getOrCreateInstance(el.modalAviso);
+      modal.show();
+    });
+
+    el.btnComenzar.addEventListener("click", () => {
+      const modal = (window as unknown as { bootstrap: any }).bootstrap.Modal.getOrCreateInstance(el.modalAviso);
+      modal.hide();
+      // Se llama en la misma acción del usuario para conservar la activación y poder pedir pantalla completa.
+      void iniciarBateria();
+    });
+
+    el.btnPdf.addEventListener("click", () => {
+      if (resultadoActual) {
+        generarPDF(resultadoActual);
+      }
+    });
+  });
+</script>

@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar.astro";
 import rayosImg from "../assets/img/rayos.jpg";
 import pcImg from "../assets/img/pc.jpg";
 import camara from "../assets/img/camara.png";
+import pantalla from "../assets/img/pantalla.png";
 ---
 
 <Layout title="Timber-Tec">
@@ -64,6 +65,18 @@ import camara from "../assets/img/camara.png";
                       aria-selected="false">Cámara</button
                     >
                   </li>
+                  <li class="nav-item" role="presentation">
+                    <button
+                      class="nav-link"
+                      id="pantalla-tab"
+                      data-bs-toggle="tab"
+                      data-bs-target="#pantalla-pane"
+                      type="button"
+                      role="tab"
+                      aria-controls="pantalla-pane"
+                      aria-selected="false">Pantalla</button
+                    >
+                  </li>
                 </ul>
               </div>
               <div class="card-body tab-content" id="hero-tabs-content">
@@ -113,6 +126,21 @@ import camara from "../assets/img/camara.png";
                     imagen e iluminación, y descarga un reporte PDF con los resultados.
                   </p>
                   <a href="camara/" class="btn btn-warning">Ir al Diagnóstico</a>
+                </div>
+                <div
+                  class="tab-pane fade p-4 rounded tab-pane-background"
+                  id="pantalla-pane"
+                  role="tabpanel"
+                  aria-labelledby="pantalla-tab"
+                  tabindex="0"
+                  style={`--bg-image: url(${pantalla.src});`}
+                >
+                  <h2 class="h5 card-title">Diagnóstico de Pantalla</h2>
+                  <p class="card-text">
+                    Revisa el estado de tu monitor: frecuencia de actualización, resolución y posibles defectos del
+                    panel (píxeles, banding y sangrado de luz).
+                  </p>
+                  <a href="pantalla/" class="btn btn-warning">Ir al Diagnóstico</a>
                 </div>
               </div>
             </div>

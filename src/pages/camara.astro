@@ -71,32 +71,81 @@ import "../assets/styles/camara.css";
                     </div>
                     <hr class="my-2" />
                     <div class="resultado-fila">
-                      <span class="resultado-etiqueta">Resolución actual</span>
+                      <span class="resultado-etiqueta">
+                        Resolución actual
+                        <i
+                          class="bi bi-info-circle-fill"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="right"
+                          data-bs-title="Resolución con la que transmite la cámara en este momento."></i>
+                      </span>
                       <span id="res-info-resolucion">—</span>
                     </div>
                     <div class="resultado-fila">
-                      <span class="resultado-etiqueta">Aspect ratio</span>
+                      <span class="resultado-etiqueta">
+                        Aspect ratio
+                        <i
+                          class="bi bi-info-circle-fill"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="right"
+                          data-bs-title="Relación ancho/alto de la imagen de video (por ejemplo, 16:9)."></i>
+                      </span>
                       <span id="res-info-aspect">—</span>
                     </div>
                     <div class="resultado-fila">
-                      <span class="resultado-etiqueta">Facing mode</span>
+                      <span class="resultado-etiqueta">
+                        Facing mode
+                        <i
+                          class="bi bi-info-circle-fill"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="right"
+                          data-bs-title="Orientación de la cámara: 'user' (frontal) o 'environment' (trasera)."></i>
+                      </span>
                       <span id="res-info-facing">—</span>
                     </div>
                     <div class="resultado-fila">
-                      <span class="resultado-etiqueta">Autofocus</span>
+                      <span class="resultado-etiqueta">
+                        Autofocus
+                        <i
+                          class="bi bi-info-circle-fill"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="right"
+                          data-bs-title="Capacidad de la cámara para enfocar de forma automática y continua."></i>
+                      </span>
                       <span id="res-info-autofocus">—</span>
                     </div>
                     <div class="resultado-fila">
-                      <span class="resultado-etiqueta">Zoom</span>
+                      <span class="resultado-etiqueta">
+                        Zoom
+                        <i
+                          class="bi bi-info-circle-fill"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="right"
+                          data-bs-title="Si la cámara admite zoom digital o por hardware."></i>
+                      </span>
                       <span id="res-info-zoom">—</span>
                     </div>
                     <div class="resultado-fila mb-1">
-                      <span class="resultado-etiqueta">Torch</span>
+                      <span class="resultado-etiqueta">
+                        Torch
+                        <i
+                          class="bi bi-info-circle-fill"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="right"
+                          data-bs-title="Si la cámara puede activar la linterna o luz auxiliar."></i>
+                      </span>
                       <span id="res-info-torch">—</span>
                     </div>
                     <hr class="my-2" />
                     <div class="resultado-fila">
-                      <span class="resultado-etiqueta">Máxima alcanzada</span>
+                      <span class="resultado-etiqueta">
+                        Máxima alcanzada
+                        <i
+                          class="bi bi-info-circle-fill"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="right"
+                          data-bs-title="Mayor resolución real lograda durante las pruebas, no solo la anunciada."></i>
+                      </span>
                       <span id="res-max" class="fw-bold">—</span>
                     </div>
                     <p class="text-body-secondary small mb-0 mt-2">
@@ -114,23 +163,58 @@ import "../assets/styles/camara.css";
                   </div>
                   <div class="card-body">
                     <div class="resultado-fila">
-                      <span class="resultado-etiqueta">Solicitados</span>
+                      <span class="resultado-etiqueta">
+                        Solicitados
+                        <i
+                          class="bi bi-info-circle-fill"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="right"
+                          data-bs-title="FPS que se pidieron a la cámara como objetivo (ideal)."></i>
+                      </span>
                       <span id="res-fps-solicitados">—</span>
                     </div>
                     <div class="resultado-fila">
-                      <span class="resultado-etiqueta">Negociado</span>
+                      <span class="resultado-etiqueta">
+                        Negociado
+                        <i
+                          class="bi bi-info-circle-fill"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="right"
+                          data-bs-title="FPS que la cámara aceptó realmente en la sesión."></i>
+                      </span>
                       <span id="res-fps-negociado">—</span>
                     </div>
                     <div class="resultado-fila">
-                      <span class="resultado-etiqueta">Rango soportado</span>
+                      <span class="resultado-etiqueta">
+                        Rango soportado
+                        <i
+                          class="bi bi-info-circle-fill"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="right"
+                          data-bs-title="Límites mínimo y máximo de FPS que declara la cámara."></i>
+                      </span>
                       <span id="res-fps-rango">—</span>
                     </div>
                     <div class="resultado-fila">
-                      <span class="resultado-etiqueta">Obtenidos</span>
+                      <span class="resultado-etiqueta">
+                        Obtenidos
+                        <i
+                          class="bi bi-info-circle-fill"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="right"
+                          data-bs-title="FPS reales medidos en la resolución máxima alcanzada."></i>
+                      </span>
                       <span id="res-fps-obtenidos">—</span>
                     </div>
                     <div class="d-flex justify-content-between align-items-center mb-1">
-                      <span class="resultado-etiqueta">Fidelidad</span>
+                      <span class="resultado-etiqueta">
+                        Fidelidad
+                        <i
+                          class="bi bi-info-circle-fill"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="right"
+                          data-bs-title="Si entrega lo que anuncia o se queda por debajo."></i>
+                      </span>
                       <span id="res-fps-fidelidad" class="badge text-bg-secondary">Pendiente</span>
                     </div>
                     <p id="res-fps-fidelidad-texto" class="text-body-secondary small mb-0 mt-2">—</p>
