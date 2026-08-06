@@ -3,6 +3,7 @@
 - Antes de trabajar código, revisa la documentación usando el MCP Context7.
 - Mantener el estándar de código limpio.
 - Evitar poner código CSS en archivos que no sean .css (solo se permite `style=""` para variables CSS como `--bg-image`).
+- Antes de crear una regla CSS nueva, revisa el CSS existente en `src/assets/styles/` para comprobar si ya existe una que la cubra; evita reglas duplicadas o estilos/títulos distintos para lo mismo.
 - Usa siempre pnpm como gestor de paquetes (nunca npm/yarn).
 - Después de editar código, ejecuta `pnpm format:check` (o `pnpm format` si hay que corregir).
 - Verifica los cambios con `pnpm typecheck` y `pnpm build` antes de terminar.

@@ -110,9 +110,3 @@ pnpm build
 # Previsualizar la compilación
 pnpm preview
 ```
-
-## 🔮 Ideas futuras
-
-Funcionalidades previstas para próximas versiones del sitio:
-
-- **Test de audio:** verificación de los canales izquierdo/derecho y barrido de frecuencias (agudos y graves), útil para revisar bocinas y audífonos.
